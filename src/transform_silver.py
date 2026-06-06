@@ -1,8 +1,9 @@
 import pandas as pd
 import json
+import sys
 
-def clean_stock_data():
-    with open("data/raw/aapl_raw.json", "r") as file:
+def clean_stock_data(ticker):
+    with open(f"data/raw/{ticker.lower()}_raw.json", "r") as file:
         raw_data = json.load(file)
         time_series_dict = raw_data["Time Series (Daily)"]
         df = pd.DataFrame(time_series_dict)
@@ -12,9 +13,9 @@ def clean_stock_data():
         df = df.rename(columns={"index": "date"})
         df["date"] = pd.to_datetime(df["date"])
         df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
-        df.to_parquet("data/silver/aapl_silver.parquet")
+        df.to_parquet(f"data/silver/{ticker.lower()}_silver.parquet")
 
 if __name__ == "__main__":
-    clean_stock_data()
-    print("Трансформация завершена. Данные сохранены в Silver слой.")
-    
+    user_ticker = sys.argv[1]
+    print(f"Here we are {user_ticker}")
+    clean_stock_data(user_ticker.lower())
