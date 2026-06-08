@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
 import sys
-
+import os
 
 def process_gold(ticker):
     spark = SparkSession.builder.appName("gold").getOrCreate()
@@ -15,6 +15,7 @@ def process_gold(ticker):
 
     # df_gold.show()
 
+    os.makedirs("data/gold", exist_ok=True)
     df_gold.write.mode("overwrite").parquet(f"data/gold/{ticker.lower()}_gold.parquet")
 
 if __name__ == "__main__":

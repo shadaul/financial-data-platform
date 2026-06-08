@@ -19,6 +19,10 @@ def fetch_stock_data(ticker):
 
     if response.status_code == 200:
         data = response.json()
+        os.makedirs("data/raw", exist_ok=True)
+        os.makedirs("data/bronze", exist_ok=True)
+        os.makedirs("data/silver", exist_ok=True)
+        os.makedirs("data/gold", exist_ok=True)
         with open(f"data/raw/{ticker.lower()}_raw.json", "w") as file:
             json.dump(data, file, indent=4)
     else:

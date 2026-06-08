@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import sys
+import os 
 
 def clean_stock_data(ticker):
     with open(f"data/raw/{ticker.lower()}_raw.json", "r") as file:
@@ -9,10 +10,12 @@ def clean_stock_data(ticker):
         df = pd.DataFrame(time_series_dict)
         df = df.T
         df = df.rename(columns={"1. open": "open", "2. high": "high", "3. low": "low", "4. close": "close", "5. volume": "volume"})
-        df =df.reset_index()
+        df = df.reset_index()
         df = df.rename(columns={"index": "date"})
         df["date"] = pd.to_datetime(df["date"])
         df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
+    
+        os.makedirs("data/silver", exist_ok=True) 
         df.to_parquet(f"data/silver/{ticker.lower()}_silver.parquet")
 
 if __name__ == "__main__":
